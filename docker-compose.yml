@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: food_delivery
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user_service:
+    build: ./user_service
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/food_delivery
+      - SECRET_KEY=your-secret-key-here
+      - RESTAURANT_SERVICE_URL=http://restaurant_service:8002
+      - DELIVERY_SERVICE_URL=http://delivery_agent_service:8003
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./user_service:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+
+  restaurant_service:
+    build: ./restaurant_service
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/food_delivery
+      - SECRET_KEY=your-secret-key-here
+      - USER_SERVICE_URL=http://user_service:8001
+      - DELIVERY_SERVICE_URL=http://delivery_agent_service:8003
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./restaurant_service:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8002 --reload
+
+  delivery_agent_service:
+    build: ./delivery_agent_service
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/food_delivery
+      - SECRET_KEY=your-secret-key-here
+      - USER_SERVICE_URL=http://user_service:8001
+      - RESTAURANT_SERVICE_URL=http://restaurant_service:8002
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./delivery_agent_service:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8003 --reload
+
+volumes:
+  postgres_data:
