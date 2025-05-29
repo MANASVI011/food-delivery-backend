@@ -11,14 +11,6 @@ from schemas import OrderCreate, OrderResponse
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
 async def place_order(order: OrderCreate, user_id: int, db: Session = Depends(get_db)):
     """Place a new order"""

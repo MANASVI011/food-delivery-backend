@@ -8,14 +8,6 @@ from schemas import DeliveryAgentCreate, DeliveryAgentUpdate, DeliveryAgentRespo
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=DeliveryAgentResponse, status_code=status.HTTP_201_CREATED)
 def create_agent(agent: DeliveryAgentCreate, db: Session = Depends(get_db)):
     """Create a new delivery agent"""

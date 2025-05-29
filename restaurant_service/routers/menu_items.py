@@ -8,14 +8,6 @@ from schemas import MenuItemCreate, MenuItemUpdate, MenuItemResponse
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/restaurant/{restaurant_id}", response_model=MenuItemResponse, status_code=status.HTTP_201_CREATED)
 def create_menu_item(restaurant_id: int, menu_item: MenuItemCreate, db: Session = Depends(get_db)):
     """Add a new menu item to a restaurant"""

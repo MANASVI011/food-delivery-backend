@@ -8,14 +8,6 @@ from schemas import RatingCreate, RatingResponse
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=RatingResponse, status_code=status.HTTP_201_CREATED)
 def create_rating(rating: RatingCreate, user_id: int, db: Session = Depends(get_db)):
     """Submit a rating for an order"""

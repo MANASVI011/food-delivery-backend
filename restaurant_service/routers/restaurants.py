@@ -8,14 +8,6 @@ from schemas import RestaurantCreate, RestaurantUpdate, RestaurantResponse
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=RestaurantResponse, status_code=status.HTTP_201_CREATED)
 def create_restaurant(restaurant: RestaurantCreate, db: Session = Depends(get_db)):
     """Create a new restaurant"""

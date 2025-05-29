@@ -11,14 +11,6 @@ from schemas import OrderResponse, OrderStatusUpdate, DeliveryAgentAssignment
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.get("/restaurant/{restaurant_id}", response_model=List[OrderResponse])
 def get_restaurant_orders(restaurant_id: int, status_filter: str = None, db: Session = Depends(get_db)):
     """Get all orders for a restaurant"""

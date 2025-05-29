@@ -11,14 +11,6 @@ from schemas import DeliveryCreate, DeliveryResponse, DeliveryStatusUpdate
 
 router = APIRouter()
 
-def get_db():
-    from database import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=DeliveryResponse, status_code=status.HTTP_201_CREATED)
 def create_delivery(delivery: DeliveryCreate, db: Session = Depends(get_db)):
     """Create a new delivery record"""
