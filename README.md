@@ -286,7 +286,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: Open an issue on GitHub
 - **Documentation**: Check the `/docs` endpoints
-- **Email**: [your-email@example.com]
+- **Email**: [manasvigowda35@gmail.com]
 
 ## 🙏 Acknowledgments
 
