@@ -45,7 +45,9 @@ cd food-delivery-backend
 
 2. Start all services
 \`\`\`bash
-docker-compose up --build
+docker-compose up --build 
+OR
+docker-compose up -d
 \`\`\`
 
 3. Access the services:
